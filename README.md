@@ -1,0 +1,1 @@
+# Automated Clipboard Copier
