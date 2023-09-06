@@ -5,9 +5,16 @@ clip_record_file_names = [
     'clip_record',
     'clip-record-IT-videos-special',
     'clip-record-TCP-and-Sockets-videos-special',
-    'clip-record-various-videos'
+    'clip-record-various-videos',
+    'clip-record-web-development'
     ]
-clip_record_file = clip_record_file_names[0]
+
+print('Choose from the folllowing text files below:')
+for i in range(len(clip_record_file_names)):
+    print(f'[{i}]', clip_record_file_names[i])
+
+file_index = int(input(f'Enter the file index (0-{len(clip_record_file_names)-1}): '))
+clip_record_file = clip_record_file_names[file_index]
 
 try:
     os.mkdir(clip_record_directory)
@@ -19,7 +26,11 @@ is_created_clipboard_record = False
 latest_clipboard_data = ''
 old_clipboard_data = latest_clipboard_data
 while True:
-    win32clipboard.OpenClipboard()
+    try:
+        win32clipboard.OpenClipboard()
+    except win32clipboard.pywintypes.error as err:
+        print(f'Opening Clipboard Error: {err}')
+        continue
     date_copied = datetime.datetime.today()
     try:
         latest_clipboard_data = win32clipboard.GetClipboardData()
@@ -27,7 +38,7 @@ while True:
             
             with open(f'{clip_record_directory}\{clip_record_file}.txt', 'a') as f:
                 f.write(f'[(+)][{date_copied}]:(+):{latest_clipboard_data}\n')
-            print(f'[{date_copied}]: {latest_clipboard_data}')
+            print(f'Writing to ({clip_record_file}) -> [{date_copied}]: {latest_clipboard_data}')
             old_clipboard_data = latest_clipboard_data
     
     except TypeError as clip_exception:
